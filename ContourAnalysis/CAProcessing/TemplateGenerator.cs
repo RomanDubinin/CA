@@ -12,14 +12,14 @@ namespace ContourAnalysisNS
             font = new Font(font.FontFamily, 140, font.Style);
             Graphics gr = Graphics.FromImage(bmp);
             //
-            processor.onlyFindContours = true;
+            processor.OnlyFindContours = true;
             foreach (char c in chars)
             {
                 gr.Clear(Color.White);
                 gr.DrawString(c.ToString(), font, Brushes.Black, 5, 5);
                 GenerateTemplate(processor, bmp, c.ToString());
             }
-            processor.onlyFindContours = false;
+            processor.OnlyFindContours = false;
         }
 
         public static void GenerateAntipatterns(ImageProcessor processor)
@@ -27,7 +27,7 @@ namespace ContourAnalysisNS
             Bitmap bmp = new Bitmap(200, 200);
             Graphics gr = Graphics.FromImage(bmp);
             //
-            processor.onlyFindContours = true;
+            processor.OnlyFindContours = true;
             //square
             gr.Clear(Color.White);
             gr.FillRectangle(Brushes.Black, new Rectangle(10, 10, 80, 80));
@@ -45,18 +45,18 @@ namespace ContourAnalysisNS
             gr.FillEllipse(Brushes.Black, new Rectangle(10, 10, 100, 100));
             GenerateTemplate(processor, bmp, "antipattern");
 
-            processor.onlyFindContours = false;
+            processor.OnlyFindContours = false;
         }
 
         private static void GenerateTemplate(ImageProcessor processor, Bitmap bmp, string name)
         {
             processor.ProcessImage(new Image<Bgr, byte>(bmp));
             //find max contour
-            if (processor.samples.Count > 0)
+            if (processor.Samples.Count > 0)
             {
-                processor.samples.Sort((t1, t2) => -t1.sourceArea.CompareTo(t2.sourceArea));
-                processor.samples[0].name = name;
-                processor.templates.Add(processor.samples[0]);
+                processor.Samples.Sort((t1, t2) => -t1.SourceArea.CompareTo(t2.SourceArea));
+                processor.Samples[0].Name = name;
+                processor.Templates.Add(processor.Samples[0]);
             }
         }
     }

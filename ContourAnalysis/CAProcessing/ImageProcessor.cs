@@ -12,8 +12,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using System.Drawing;
@@ -24,25 +22,25 @@ namespace ContourAnalysisNS
     public class ImageProcessor
     {
         //settings
-        public bool equalizeHist = false;
-        public bool noiseFilter = false;
-        public int cannyThreshold = 50;
-        public bool blur = true;
-        public int adaptiveThresholdBlockSize = 4;
-        public double adaptiveThresholdParameter = 1.2d;
-        public bool addCanny = true;
-        public bool filterContoursBySize = true;
-        public bool onlyFindContours = false;
-        public int minContourLength = 15;
-        public int minContourArea = 10;
-        public double minFormFactor = 0.5;
+        public bool EqualizeHist = false;
+        public bool NoiseFilter = false;
+        public int CannyThreshold = 50;
+        public bool Blur = true;
+        public int AdaptiveThresholdBlockSize = 4;
+        public double AdaptiveThresholdParameter = 1.2d;
+        public bool AddCanny = true;
+        public bool FilterContoursBySize = true;
+        public bool OnlyFindContours = false;
+        public int MinContourLength = 15;
+        public int MinContourArea = 10;
+        public double MinFormFactor = 0.5;
         //
-        public List<Contour<Point>> contours;
-        public Templates templates = new Templates();
-        public Templates samples = new Templates();
-        public List<FoundTemplateDesc> foundTemplates = new List<FoundTemplateDesc>();
-        public TemplateFinder finder = new TemplateFinder();
-        public Image<Gray, byte> binarizedFrame;
+        public List<Contour<Point>> Contours;
+        public Templates Templates = new Templates();
+        public Templates Samples = new Templates();
+        public List<FoundTemplateDesc> FoundTemplates = new List<FoundTemplateDesc>();
+        public TemplateFinder Finder = new TemplateFinder();
+        public Image<Gray, byte> BinarizedFrame;
         
 
         public void ProcessImage(Image<Bgr, byte> frame)
@@ -52,28 +50,28 @@ namespace ContourAnalysisNS
 
         public void ProcessImage(Image<Gray, byte> grayFrame)
         {
-            if (equalizeHist)
+            if (EqualizeHist)
                 grayFrame._EqualizeHist();//autocontrast
             //smoothed
             Image<Gray, byte> smoothedGrayFrame = grayFrame.PyrDown();
             smoothedGrayFrame = smoothedGrayFrame.PyrUp();
             //canny
             Image<Gray, byte> cannyFrame = null;
-            if (noiseFilter)
-                cannyFrame = smoothedGrayFrame.Canny(new Gray(cannyThreshold), new Gray(cannyThreshold));
+            if (NoiseFilter)
+                cannyFrame = smoothedGrayFrame.Canny(new Gray(CannyThreshold), new Gray(CannyThreshold));
             //smoothing
-            if (blur)
+            if (Blur)
                 grayFrame = smoothedGrayFrame;
             //binarize
-            CvInvoke.cvAdaptiveThreshold(grayFrame, grayFrame, 255, Emgu.CV.CvEnum.ADAPTIVE_THRESHOLD_TYPE.CV_ADAPTIVE_THRESH_MEAN_C, Emgu.CV.CvEnum.THRESH.CV_THRESH_BINARY, adaptiveThresholdBlockSize + adaptiveThresholdBlockSize % 2 + 1, adaptiveThresholdParameter);
+            CvInvoke.cvAdaptiveThreshold(grayFrame, grayFrame, 255, Emgu.CV.CvEnum.ADAPTIVE_THRESHOLD_TYPE.CV_ADAPTIVE_THRESH_MEAN_C, Emgu.CV.CvEnum.THRESH.CV_THRESH_BINARY, AdaptiveThresholdBlockSize + AdaptiveThresholdBlockSize % 2 + 1, AdaptiveThresholdParameter);
             //
             grayFrame._Not();
             //
-            if (addCanny)
+            if (AddCanny)
             if (cannyFrame != null)
                 grayFrame._Or(cannyFrame);
             //
-            this.binarizedFrame = grayFrame;
+            BinarizedFrame = grayFrame;
 
             //dilate canny contours for filtering
             if (cannyFrame != null)
@@ -82,56 +80,56 @@ namespace ContourAnalysisNS
             //find contours
             var sourceContours = grayFrame.FindContours(Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_NONE, Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST);
             //filter contours
-            contours = FilterContours(sourceContours, cannyFrame, grayFrame.Width, grayFrame.Height);
+            Contours = FilterContours(sourceContours, cannyFrame, grayFrame.Width, grayFrame.Height);
             //find templates
-            lock (foundTemplates)
-                foundTemplates.Clear();
-            samples.Clear();
+            lock (FoundTemplates)
+                FoundTemplates.Clear();
+            Samples.Clear();
 
-            lock (templates)
-            Parallel.ForEach<Contour<Point>>(contours, (contour) =>
+            lock (Templates)
+            Parallel.ForEach<Contour<Point>>(Contours, (contour) =>
             {
                 var arr = contour.ToArray();
-                Template sample = new Template(arr, contour.Area, samples.templateSize);
-                lock (samples)
-                    samples.Add(sample);
+                Template sample = new Template(arr, contour.Area, Samples.TemplateSize);
+                lock (Samples)
+                    Samples.Add(sample);
 
-                if (!onlyFindContours)
+                if (!OnlyFindContours)
                 {
-                    FoundTemplateDesc desc = finder.FindTemplate(templates, sample);
+                    FoundTemplateDesc desc = Finder.FindTemplate(Templates, sample);
 
                     if (desc != null)
-                        lock (foundTemplates)
-                            foundTemplates.Add(desc);
+                        lock (FoundTemplates)
+                            FoundTemplates.Add(desc);
                 }
             }
             );
             //
-            FilterByIntersection(ref foundTemplates);
+            FilterByIntersection(ref FoundTemplates);
         }
 
         private static void FilterByIntersection(ref List<FoundTemplateDesc> templates)
         {
             //sort by area
-            templates.Sort(new Comparison<FoundTemplateDesc>((t1, t2) => -t1.sample.contour.SourceBoundingRect.Area().CompareTo(t2.sample.contour.SourceBoundingRect.Area())));
+            templates.Sort(new Comparison<FoundTemplateDesc>((t1, t2) => -t1.Sample.Contour.SourceBoundingRect.Area().CompareTo(t2.Sample.Contour.SourceBoundingRect.Area())));
             //exclude templates inside other templates
             HashSet<int> toDel = new HashSet<int>();
             for (int i = 0; i < templates.Count; i++)
             {
                 if (toDel.Contains(i))
                     continue;
-                Rectangle bigRect = templates[i].sample.contour.SourceBoundingRect;
-                int bigArea = templates[i].sample.contour.SourceBoundingRect.Area();
+                Rectangle bigRect = templates[i].Sample.Contour.SourceBoundingRect;
+                int bigArea = templates[i].Sample.Contour.SourceBoundingRect.Area();
                 bigRect.Inflate(4, 4);
                 for (int j = i + 1; j < templates.Count; j++)
                 {
-                    if (bigRect.Contains(templates[j].sample.contour.SourceBoundingRect))
+                    if (bigRect.Contains(templates[j].Sample.Contour.SourceBoundingRect))
                     {
-                        double a = templates[j].sample.contour.SourceBoundingRect.Area();
+                        double a = templates[j].Sample.Contour.SourceBoundingRect.Area();
                         if (a / bigArea > 0.9d)
                         {
                             //choose template by rate
-                            if (templates[i].rate > templates[j].rate)
+                            if (templates[i].Rate > templates[j].Rate)
                                 toDel.Add(j);
                             else
                                 toDel.Add(i);
@@ -155,13 +153,13 @@ namespace ContourAnalysisNS
             List<Contour<Point>> result = new List<Contour<Point>>();
             while (c != null)
             {
-                if (filterContoursBySize)
-                    if (c.Total < minContourLength ||
-                        c.Area < minContourArea || c.Area > maxArea ||
-                        c.Area / c.Total <= minFormFactor)
+                if (FilterContoursBySize)
+                    if (c.Total < MinContourLength ||
+                        c.Area < MinContourArea || c.Area > maxArea ||
+                        c.Area / c.Total <= MinFormFactor)
                         goto next;
 
-                if (noiseFilter)
+                if (NoiseFilter)
                 {
                     Point p1 = c[0];
                     Point p2 = c[(c.Total / 2) % c.Total];

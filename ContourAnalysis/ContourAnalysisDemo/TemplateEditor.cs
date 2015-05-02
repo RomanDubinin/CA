@@ -19,7 +19,7 @@ namespace ContourAnalysisDemo
             InitializeComponent();
 
             this.templates = templates;
-            templates.Sort((t1, t2)=>t1.name.CompareTo(t2.name));
+            templates.Sort((t1, t2)=>t1.Name.CompareTo(t2.Name));
             UpdateInterface();
         }
 
@@ -38,10 +38,10 @@ namespace ContourAnalysisDemo
                         e.Value = e.RowIndex;
                         break;
                     case 1:
-                        e.Value = templates[e.RowIndex].name;
+                        e.Value = templates[e.RowIndex].Name;
                         break;
                     case 2:
-                        e.Value = templates[e.RowIndex].preferredAngleNoMore90;
+                        e.Value = templates[e.RowIndex].PreferredAngleNoMore90;
                         break;
                 }
             }   
@@ -50,7 +50,7 @@ namespace ContourAnalysisDemo
         private void dgvTemplates_CellValuePushed(object sender, DataGridViewCellValueEventArgs e)
         {
             if (e.RowIndex >= 0 && e.RowIndex < templates.Count && e.ColumnIndex == 1)
-                templates[e.RowIndex].name = e.Value.ToString();
+                templates[e.RowIndex].Name = e.Value.ToString();
         }
 
         private void dgvTemplates_SelectionChanged(object sender, EventArgs e)
@@ -62,7 +62,7 @@ namespace ContourAnalysisDemo
                 {
                     Refresh();
                     templates[iRow].Draw(CreateGraphics(), new Rectangle(dgvTemplates.Bounds.Right + 10, dgvTemplates.Bounds.Top, 300, 200));
-                    cbPreferredAngle.Checked = templates[iRow].preferredAngleNoMore90;
+                    cbPreferredAngle.Checked = templates[iRow].PreferredAngleNoMore90;
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace ContourAnalysisDemo
                 int iRow = dgvTemplates.SelectedCells[0].RowIndex;
                 if (iRow >= 0 && iRow < templates.Count)
                 {
-                    templates[iRow].preferredAngleNoMore90 = cbPreferredAngle.Checked;
+                    templates[iRow].PreferredAngleNoMore90 = cbPreferredAngle.Checked;
                 }
             }
         }

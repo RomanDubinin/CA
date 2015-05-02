@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Emgu.CV;
 using ContourAnalysisNS;
@@ -59,7 +54,7 @@ namespace ContourAnalysisDemo
             {
                 var rect = new Rectangle(e.CellBounds.X, e.CellBounds.Y, (e.CellBounds.Width - 24)/2, e.CellBounds.Height);
                 rect.Inflate(-20, -20);
-                Rectangle boundRect = template.contour.SourceBoundingRect;
+                Rectangle boundRect = template.Contour.SourceBoundingRect;
                 float k1 = 1f *  rect.Width / boundRect.Width;
                 float k2 = 1f * rect.Height / boundRect.Height;
                 float k = Math.Min(k1, k2);
@@ -83,7 +78,7 @@ namespace ContourAnalysisDemo
             try
             {
                 int i = dgvContours.SelectedCells[0].RowIndex;
-                samples[i].name = tbTemplateName.Text;
+                samples[i].Name = tbTemplateName.Text;
                 templates.Add(samples[i]);
             }
             catch (Exception ex)

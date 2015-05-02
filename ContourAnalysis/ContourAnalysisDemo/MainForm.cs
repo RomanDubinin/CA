@@ -43,7 +43,7 @@ namespace ContourAnalysisDemo
             //create image preocessor
             processor = new ImageProcessor();
             //load default templates
-            templateFile = AppDomain.CurrentDomain.BaseDirectory + "\\Tahoma.bin";
+			templateFile = AppDomain.CurrentDomain.BaseDirectory + "\\TemplateStar.bin";
             LoadTemplates(templateFile);
             //start capture from cam
             StartCapture();
@@ -58,7 +58,7 @@ namespace ContourAnalysisDemo
             try
             {
                 using(FileStream fs = new FileStream(fileName, FileMode.Open))
-                    processor.templates = (Templates)new BinaryFormatter().Deserialize(fs);
+                    processor.Templates = (Templates)new BinaryFormatter().Deserialize(fs);
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace ContourAnalysisDemo
             try
             {
                 using (FileStream fs = new FileStream(fileName, FileMode.Create))
-                    new BinaryFormatter().Serialize(fs, processor.templates);
+                    new BinaryFormatter().Serialize(fs, processor.Templates);
             }
             catch (Exception ex)
             {
@@ -122,7 +122,7 @@ namespace ContourAnalysisDemo
                 processor.ProcessImage(frame);
                 //
                 if(cbShowBinarized.Checked)
-                    ibMain.Image = processor.binarizedFrame;
+                    ibMain.Image = processor.BinarizedFrame;
                 else
                     ibMain.Image = frame;
             }
@@ -136,10 +136,10 @@ namespace ContourAnalysisDemo
         {
             lbFPS.Text = (frameCount - oldFrameCount) + " fps";
             oldFrameCount = frameCount;
-            if (processor.contours!=null)
-                lbContoursCount.Text = "Contours: "+processor.contours.Count;
-            if (processor.foundTemplates != null)
-                lbRecognized.Text = "Recognized contours: " + processor.foundTemplates.Count;
+            if (processor.Contours!=null)
+                lbContoursCount.Text = "Contours: "+processor.Contours.Count;
+            if (processor.FoundTemplates != null)
+                lbRecognized.Text = "Recognized contours: " + processor.FoundTemplates.Count;
         }
 
         private void ibMain_Paint(object sender, PaintEventArgs e)
@@ -155,24 +155,24 @@ namespace ContourAnalysisDemo
             Pen borderPen = new Pen(Color.FromArgb(150, 0, 255, 0));
             //
             if(cbShowContours.Checked)
-            foreach (var contour in processor.contours)
+            foreach (var contour in processor.Contours)
                 if(contour.Total>1)
                 e.Graphics.DrawLines(Pens.Red, contour.ToArray());
             //
-            lock (processor.foundTemplates)
-            foreach (FoundTemplateDesc found in processor.foundTemplates)
+            lock (processor.FoundTemplates)
+            foreach (FoundTemplateDesc found in processor.FoundTemplates)
             {
-                if (found.template.name.EndsWith(".png") || found.template.name.EndsWith(".jpg"))
+                if (found.Template.Name.EndsWith(".png") || found.Template.Name.EndsWith(".jpg"))
                 {
                     DrawAugmentedReality(found, e.Graphics);
                     continue;
                 }
 
-                Rectangle foundRect = found.sample.contour.SourceBoundingRect;
+                Rectangle foundRect = found.Sample.Contour.SourceBoundingRect;
                 Point p1 = new Point((foundRect.Left + foundRect.Right)/2, foundRect.Top);
-                string text = found.template.name;
+                string text = found.Template.Name;
                 if (showAngle)
-                    text += string.Format("\r\nangle={0:000}°\r\nscale={1:0.0}", 180 * found.angle / Math.PI, found.scale);
+                    text += string.Format("\r\nangle={0:000}°\r\nscale={1:0.0000}", 180 * found.Angle / Math.PI, found.Scale);
                 e.Graphics.DrawRectangle(borderPen, foundRect);
                 e.Graphics.DrawString(text, font, bgBrush, new PointF(p1.X + 1 - font.Height/3, p1.Y + 1 - font.Height));
                 e.Graphics.DrawString(text, font, foreBrush, new PointF(p1.X - font.Height/3, p1.Y - font.Height));
@@ -181,18 +181,18 @@ namespace ContourAnalysisDemo
 
         private void DrawAugmentedReality(FoundTemplateDesc found, Graphics gr)
         {
-            string fileName = Path.GetDirectoryName(templateFile) + "\\" + found.template.name;
+            string fileName = Path.GetDirectoryName(templateFile) + "\\" + found.Template.Name;
             if (!AugmentedRealityImages.ContainsKey(fileName))
             {
                 if (!File.Exists(fileName)) return;
                 AugmentedRealityImages[fileName] = Image.FromFile(fileName);
             }
             Image img = AugmentedRealityImages[fileName];
-            Point p = found.sample.contour.SourceBoundingRect.Center();
+            Point p = found.Sample.Contour.SourceBoundingRect.Center();
             var state = gr.Save();
             gr.TranslateTransform(p.X, p.Y);
-            gr.RotateTransform((float)(180f * found.angle / Math.PI));
-            gr.ScaleTransform((float)(found.scale), (float)(found.scale));
+            gr.RotateTransform((float)(180f * found.Angle / Math.PI));
+            gr.ScaleTransform((float)(found.Scale), (float)(found.Scale));
             gr.DrawImage(img, new Point(-img.Width/2, -img.Height/2));
             gr.Restore(state);
         }
@@ -206,23 +206,23 @@ namespace ContourAnalysisDemo
         {
             try
             {
-                processor.equalizeHist = cbAutoContrast.Checked;
+                processor.EqualizeHist = cbAutoContrast.Checked;
                 showAngle = cbShowAngle.Checked;
                 captureFromCam = cbCaptureFromCam.Checked;
                 btLoadImage.Enabled = !captureFromCam;
                 cbCamResolution.Enabled = captureFromCam;
-                processor.finder.maxRotateAngle = cbAllowAngleMore45.Checked ? Math.PI : Math.PI / 4;
-                processor.minContourArea = (int)nudMinContourArea.Value;
-                processor.minContourLength = (int)nudMinContourLength.Value;
-                processor.finder.maxACFDescriptorDeviation = (int)nudMaxACFdesc.Value;
-                processor.finder.minACF = (double)nudMinACF.Value;
-                processor.finder.minICF = (double)nudMinICF.Value;
-                processor.blur = cbBlur.Checked;
-                processor.noiseFilter = cbNoiseFilter.Checked;
-                processor.cannyThreshold = (int)nudMinDefinition.Value;
-                nudMinDefinition.Enabled = processor.noiseFilter;
-                processor.adaptiveThresholdBlockSize = (int)nudAdaptiveThBlockSize.Value;
-                processor.adaptiveThresholdParameter = cbAdaptiveNoiseFilter.Checked?1.5:0.5;
+                processor.Finder.MaxRotateAngle = cbAllowAngleMore45.Checked ? Math.PI : Math.PI / 4;
+                processor.MinContourArea = (int)nudMinContourArea.Value;
+                processor.MinContourLength = (int)nudMinContourLength.Value;
+                processor.Finder.MaxAcfDescriptorDeviation = (int)nudMaxACFdesc.Value;
+                processor.Finder.MinACF = (double)nudMinACF.Value;
+                processor.Finder.MinICF = (double)nudMinICF.Value;
+                processor.Blur = cbBlur.Checked;
+                processor.NoiseFilter = cbNoiseFilter.Checked;
+                processor.CannyThreshold = (int)nudMinDefinition.Value;
+                nudMinDefinition.Enabled = processor.NoiseFilter;
+                processor.AdaptiveThresholdBlockSize = (int)nudAdaptiveThBlockSize.Value;
+                processor.AdaptiveThresholdParameter = cbAdaptiveNoiseFilter.Checked?1.5:0.5;
                 //cam resolution
                 string[] parts = cbCamResolution.Text.ToLower().Split('x');
                 if (parts.Length == 2)
@@ -261,13 +261,13 @@ namespace ContourAnalysisDemo
         private void btCreateTemplate_Click(object sender, EventArgs e)
         {
             if(frame!=null)
-                new ShowContoursForm(processor.templates, processor.samples, frame).ShowDialog();
+                new ShowContoursForm(processor.Templates, processor.Samples, frame).ShowDialog();
         }
 
         private void btNewTemplates_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Do you want to create new template database?", "Create new template database", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
-                processor.templates.Clear();
+                processor.Templates.Clear();
         }
 
         private void btOpenTemplates_Click(object sender, EventArgs e)
@@ -294,7 +294,7 @@ namespace ContourAnalysisDemo
 
         private void btTemplateEditor_Click(object sender, EventArgs e)
         {
-            new TemplateEditor(processor.templates).Show();
+            new TemplateEditor(processor.Templates).Show();
         }
 
         private void btAutoGenerate_Click(object sender, EventArgs e)

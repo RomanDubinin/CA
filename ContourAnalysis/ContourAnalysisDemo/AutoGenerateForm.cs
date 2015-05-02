@@ -34,11 +34,11 @@ namespace ContourAnalysisDemo
         {
             try
             {
-                int oldCount = processor.templates.Count;
+                int oldCount = processor.Templates.Count;
                 TemplateGenerator.GenerateChars(processor, tbChars.Text.ToCharArray(), tbChars.Font);
                 if(cbAntipattern.Checked)
                     TemplateGenerator.GenerateAntipatterns(processor);
-                MessageBox.Show("Added "+(processor.templates.Count - oldCount)+" templates");
+                MessageBox.Show("Added "+(processor.Templates.Count - oldCount)+" templates");
             }
             catch (Exception ex)
             {

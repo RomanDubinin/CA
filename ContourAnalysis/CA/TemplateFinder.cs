@@ -14,82 +14,62 @@ using System;
 
 namespace ContourAnalysisNS
 {
-    public class TemplateFinder
-    {
-        public double minACF = 0.96d;
-        public double minICF = 0.85d;
-        public bool checkICF = true;
-        public bool checkACF = true;
-        public double maxRotateAngle = Math.PI;
-        public int maxACFDescriptorDeviation = 4;
-        public string antiPatternName = "antipattern";
+	public class TemplateFinder
+	{
+		public double MinACF = 0.96d;
+		public double MinICF = 0.85d;
+		public bool CheckICF = true;
+		public bool CheckACF = true;
+		public double MaxRotateAngle = Math.PI;
+		public int MaxAcfDescriptorDeviation = 4;
+		public string AntiPatternName = "antipattern";
 
-        public FoundTemplateDesc FindTemplate(Templates templates, Template sample)
-        {
-            //int maxInterCorrelationShift = (int)(templateSize * maxRotateAngle / Math.PI);
-            //maxInterCorrelationShift = Math.Min(templateSize, maxInterCorrelationShift+13);
-            double rate = 0;
-            double angle = 0;
-            Complex interCorr = default(Complex);
-            Template foundTemplate = null;
-            foreach (var template in templates)
-            {
-                //
-                if (Math.Abs(sample.autoCorrDescriptor1 - template.autoCorrDescriptor1) > maxACFDescriptorDeviation) continue;
-                if (Math.Abs(sample.autoCorrDescriptor2 - template.autoCorrDescriptor2) > maxACFDescriptorDeviation) continue;
-                if (Math.Abs(sample.autoCorrDescriptor3 - template.autoCorrDescriptor3) > maxACFDescriptorDeviation) continue;
-                if (Math.Abs(sample.autoCorrDescriptor4 - template.autoCorrDescriptor4) > maxACFDescriptorDeviation) continue;
-                //
-                double r = 0;
-                if (checkACF)
-                {
-                    r = template.autoCorr.NormDot(sample.autoCorr).Norma;
-                    if (r < minACF)
-                        continue;
-                }
-                if (checkICF)
-                {
-                    interCorr = template.contour.InterCorrelation(sample.contour).FindMaxNorma();
-                    r = interCorr.Norma / (template.contourNorma * sample.contourNorma);
-                    if (r < minICF)
-                        continue;
-                    if (Math.Abs(interCorr.Angle) > maxRotateAngle)
-                        continue;
-                }
-                if (template.preferredAngleNoMore90 && Math.Abs(interCorr.Angle) >= Math.PI / 2)
-                    continue;//unsuitable angle
-                //find max rate
-                if (r >= rate)
-                {
-                    rate = r;
-                    foundTemplate = template;
-                    angle = interCorr.Angle;
-                }
-            }
-            //ignore antipatterns
-            if (foundTemplate != null && foundTemplate.name == antiPatternName)
-                foundTemplate = null;
-            //
-            if (foundTemplate != null)
-                return new FoundTemplateDesc() { template = foundTemplate, rate = rate, sample = sample, angle = angle };
-            else
-                return null;
-        }
-    }
-
-    public class FoundTemplateDesc
-    {
-        public double rate;
-        public Template template;
-        public Template sample;
-        public double angle;
-
-        public double scale
-        {
-            get
-            {
-                return Math.Sqrt(sample.sourceArea / template.sourceArea);
-            }
-        }
-    }
+		public FoundTemplateDesc FindTemplate(Templates templates, Template sample)
+		{
+			double rate = 0;
+			double angle = 0;
+			var interCorr = new Complex(0, 0);
+			Template foundTemplate = null;
+			foreach (var template in templates)
+			{
+				if (Math.Abs(sample.AutoCorrDescriptor1 - template.AutoCorrDescriptor1) > MaxAcfDescriptorDeviation) continue;
+				if (Math.Abs(sample.AutoCorrDescriptor2 - template.AutoCorrDescriptor2) > MaxAcfDescriptorDeviation) continue;
+				if (Math.Abs(sample.AutoCorrDescriptor3 - template.AutoCorrDescriptor3) > MaxAcfDescriptorDeviation) continue;
+				if (Math.Abs(sample.AutoCorrDescriptor4 - template.AutoCorrDescriptor4) > MaxAcfDescriptorDeviation) continue;
+				//
+				double r = 0;
+				if (CheckACF)
+				{
+					r = template.ACF.NotmalizedScalarProduct(sample.ACF).Norma;
+					if (r < MinACF)
+						continue;
+				}
+				if (CheckICF)
+				{
+					interCorr = template.Contour.InterCorrelationFunction(sample.Contour).FindMaxNormaItem();
+					r = interCorr.Norma/(template.ContourNorma*sample.ContourNorma);
+					if (r < MinICF)
+						continue;
+					if (Math.Abs(interCorr.Angle) > MaxRotateAngle)
+						continue;
+				}
+				if (template.PreferredAngleNoMore90 && Math.Abs(interCorr.Angle) >= Math.PI/2)
+					continue; //unsuitable angle
+				//find max rate
+				if (r >= rate)
+				{
+					rate = r;
+					foundTemplate = template;
+					angle = interCorr.Angle;
+				}
+			}
+			//ignore antipatterns
+			if (foundTemplate != null && foundTemplate.Name == AntiPatternName)
+				foundTemplate = null;
+			//
+			if (foundTemplate != null)
+				return new FoundTemplateDesc {Template = foundTemplate, Rate = rate, Sample = sample, Angle = angle};
+			return null;
+		}
+	}
 }
