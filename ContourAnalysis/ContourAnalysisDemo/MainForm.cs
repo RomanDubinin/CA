@@ -43,7 +43,7 @@ namespace ContourAnalysisDemo
             //create image preocessor
             processor = new ImageProcessor();
             //load default templates
-			templateFile = AppDomain.CurrentDomain.BaseDirectory + "\\TemplateStar.bin";
+			templateFile = "E:\\Repositories\\ContourAnalysis\\ContourAnalysis\\libs\\TemplateStar.bin";
             LoadTemplates(templateFile);
             //start capture from cam
             StartCapture();

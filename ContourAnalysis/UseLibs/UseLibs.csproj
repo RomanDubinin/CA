@@ -33,13 +33,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV">
-      <HintPath>..\CAProcessing\Emgu.CV.dll</HintPath>
+      <HintPath>..\libs\Emgu.CV.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.UI">
-      <HintPath>..\CAProcessing\Emgu.CV.UI.dll</HintPath>
+      <HintPath>..\libs\Emgu.CV.UI.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.Util">
-      <HintPath>..\CAProcessing\Emgu.Util.dll</HintPath>
+      <HintPath>..\libs\Emgu.Util.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
