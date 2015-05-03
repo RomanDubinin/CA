@@ -129,9 +129,9 @@
       <Project>{38F5165F-094D-42E5-B4AA-7BF299901F5F}</Project>
       <Name>ContourAnalysisProcessing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CA\ContourAnalysis.csproj">
+    <ProjectReference Include="..\CA\ContourAnalysisCore.csproj">
       <Project>{DDBD6CF7-2367-4084-A609-1B9C1885DC98}</Project>
-      <Name>ContourAnalysis</Name>
+      <Name>ContourAnalysisCore</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -20,12 +20,13 @@ namespace UseLibs
 		private const int CamWidth = 640;
 		private const int CamHeight = 480;
 
+		const string TemplateFile = "C:\\Study\\CA\\ContourAnalysis\\libs\\TemplateStar.bin";
 
 		static void Main(string[] args)
 		{
 			Processor = new ImageProcessor();
-			var templateFile = AppDomain.CurrentDomain.BaseDirectory + "\\TemplateStar.bin";
-			LoadTemplates(templateFile);
+			
+			LoadTemplates(TemplateFile);
 
 
 			StartCapture();

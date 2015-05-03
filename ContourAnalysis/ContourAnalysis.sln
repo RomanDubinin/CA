@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContourAnalysis", "CA\ContourAnalysis.csproj", "{DDBD6CF7-2367-4084-A609-1B9C1885DC98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContourAnalysisCore", "CA\ContourAnalysisCore.csproj", "{DDBD6CF7-2367-4084-A609-1B9C1885DC98}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContourAnalysisProcessing", "CAProcessing\ContourAnalysisProcessing.csproj", "{38F5165F-094D-42E5-B4AA-7BF299901F5F}"
 EndProject
