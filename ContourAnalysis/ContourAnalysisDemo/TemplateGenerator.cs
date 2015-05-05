@@ -1,8 +1,9 @@
 ﻿using System.Drawing;
-using Emgu.CV.Structure;
+using ContourAnalysisNS;
 using Emgu.CV;
+using Emgu.CV.Structure;
 
-namespace ContourAnalysisNS
+namespace ContourAnalysisDemo
 {
     public static class TemplateGenerator
     {

@@ -46,7 +46,7 @@ namespace UseLibs
 
 		private static void StartCapture()
 		{
-			Capture = new Capture();
+			Capture = new Capture(1);
 			ApplyCamSettings();
 		}
 
@@ -70,8 +70,8 @@ namespace UseLibs
 
 			foreach (var found in Processor.FoundTemplates)
 			{
-				Rectangle foundRect = found.Sample.Contour.SourceBoundingRect;
-				Console.WriteLine(foundRect.Location);
+				var foundRect = found.Sample.Contour.GetBoundsRect();
+				Console.WriteLine("Distanse: {0}", DistanceHelper.DistanceByRelation(foundRect.Height / CamHeight));
 			}
 			Console.WriteLine(stopWatch.Elapsed);
 		}
