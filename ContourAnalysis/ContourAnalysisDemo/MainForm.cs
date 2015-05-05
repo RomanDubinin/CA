@@ -83,7 +83,7 @@ namespace ContourAnalysisDemo
 		{
 			try
 			{
-				_capture = new Capture();
+				_capture = new Capture(1);
 				ApplyCamSettings();
 			}
 			catch (NullReferenceException ex)
@@ -172,7 +172,7 @@ namespace ContourAnalysisDemo
 					var p1 = new Point((foundRect.Left + foundRect.Right)/2, foundRect.Top);
 					var text = found.Template.Name;
 					if (ShowAngle)
-						text += string.Format("\r\nangle={0:000}°\r\nscale={1:0.0000}", 180*found.Angle/Math.PI, found.Scale);
+						text += string.Format("\r\nangle={0:000}°\r\nrelation={1:0.0000}\r\ndistance={2:00.00}", 180 * found.Angle / Math.PI, found.Sample.Contour.GetBoundsRect().Height / CamHeight, DistanceHelper.DistanceByRelation(found.Sample.Contour.GetBoundsRect().Height / CamHeight));
 					e.Graphics.DrawRectangle(borderPen, foundRect);
 					e.Graphics.DrawString(text, font, bgBrush, new PointF(p1.X + 1 - font.Height/3, p1.Y + 1 - font.Height));
 					e.Graphics.DrawString(text, font, foreBrush, new PointF(p1.X - font.Height/3, p1.Y - font.Height));

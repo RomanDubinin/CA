@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Complex.cs" />
     <Compile Include="Contour.cs" />
+    <Compile Include="DistanceHelper.cs" />
     <Compile Include="FoundTemplateDesc.cs" />
     <Compile Include="ImageProcessor.cs" />
     <Compile Include="PointHelper.cs" />
