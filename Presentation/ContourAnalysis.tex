@@ -1,0 +1,76 @@
+\documentclass[notes,compress]{beamer}
+
+\usepackage[english, russian]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+
+\graphicspath{ {./imgs/} }
+\DeclareGraphicsExtensions{.jpg,.png}
+
+\mode<presentation>
+{
+  \usepackage[bars]{beamerthemetree}
+  \beamertemplatetransparentcovereddynamic
+  \beamertemplateballitem
+}
+
+\usetheme{Antibes}
+\usecolortheme{dolphin}
+
+\usepackage[T1]{fontenc}
+\beamertemplatetransparentcovered
+
+
+
+
+\title
+  	{{Анализ контуров.}}
+ 
+
+ %\subject{Theoretical Computer Science}
+ \date{Екатеринбург,~2015}
+
+
+ \begin{document}
+    \frame{\titlepage}
+    \begin{frame}
+        \frametitle{ввдение}
+        {\Huge текст}
+        \begin{itemize}
+          \item<+-> first
+          \item<+-> second
+          \item<+-> third
+
+            \begin{enumerate}
+              \item<1-> 1
+              \item<1-2> \alert<5-> {2}
+              \item<3-> third
+            \end{enumerate}
+        \end{itemize}
+        \uncover<4-> {hi}
+    \end{frame}
+
+    \begin{frame}
+        \includegraphics[width=.8\textwidth]{firstImage}
+    \end{frame}
+
+    \begin{frame}
+    	\begin{columns}[T]
+        	\begin{column}{.5\textwidth}
+            	Your textblock
+           	
+        	\end{column}
+        	\begin{column}{.5\textwidth}
+            	\begin{block}{Your image}
+                	\includegraphics[width=\textwidth]{firstImage}
+            	\end{block}
+        	\end{column}
+    	\end{columns}
+	\end{frame}
+
+    \begin{frame}
+        Improved integral $\int\limits_{a}^{b} x^2 dx$ inside text
+    \end{frame}
+
+\end{document} 
