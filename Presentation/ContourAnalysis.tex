@@ -47,29 +47,29 @@
             \begin{column}{.4\textwidth}
                 \begin{columns}
                     \begin{column}{\textwidth}
-                        \only<2->{\includegraphics[width=\textwidth]{FirstPixel}}
+                        \visible<2->{\includegraphics[width=\textwidth]{FirstPixel}}
                     \end{column}
                 \end{columns}
                 
                 \begin{columns}
                     \begin{column}{\textwidth}
-                        \only<1->{\includegraphics[width=\textwidth]{contour_def}}
+                        \visible<1->{\includegraphics[width=\textwidth]{contour_def}}
                     \end{column}
                 \end{columns}
         	    
             \end{column}            
             
             \begin{column}{.1\textwidth}
-        	    \only<2->{\includegraphics[width=\textwidth]{ContourCoords}}
+        	    \visible<2->{\includegraphics[width=\textwidth]{ContourCoords}}
             \end{column}
             
-            \begin{column}{.5\textwidth}
-                \only<1->{Интересующие нас объекты располагаются на пиксельной сетке, значит контур - последовательность пикселей.}
+            {\begin{column}{.5\textwidth}
+                \visible<1->{Интересующие нас объекты располагаются на пиксельной сетке, значит контур - последовательность пикселей.}
                 \newline
                 \newline
-        	    \only<2->{В дальнейшем будет удобно представлять каждый пиксель контура не через абсолютные координаты,
+        	    \visible<2->{В дальнейшем будет удобно представлять каждый пиксель контура не через абсолютные координаты,
                             а как сдвиг относительно предыдущего}
-            \end{column}
+            \end{column}}
            
         \end{columns}
 	   
