@@ -26,7 +26,7 @@
 
 \title
   	{{Анализ контуров.}}
- 
+
 
  %\subject{Theoretical Computer Science}
  \date{Екатеринбург,~2015}
@@ -34,57 +34,79 @@
 
  \begin{document}
     \frame{\titlepage}
-    
+
     \begin{frame}
         \frametitle{Введение}
         \uncover<+-> {Рассматриваемые в данной лекции контуры - это границы объектов.
         То есть замкнутые кривые без самопересечений.}
     \end{frame}
-    
+
     \begin{frame}
         \begin{columns}[T]
-            
+
             \begin{column}{.4\textwidth}
                 \begin{columns}
                     \begin{column}{\textwidth}
                         \visible<2->{\includegraphics[width=\textwidth]{FirstPixel}}
                     \end{column}
                 \end{columns}
-                
+
                 \begin{columns}
                     \begin{column}{\textwidth}
                         \visible<1->{\includegraphics[width=\textwidth]{contour_def}}
                     \end{column}
                 \end{columns}
-        	    
-            \end{column}            
-            
+        	
+            \end{column}
+
             \begin{column}{.1\textwidth}
         	    \visible<2->{\includegraphics[width=\textwidth]{ContourCoords}}
             \end{column}
-            
+
             {\begin{column}{.5\textwidth}
-                \visible<1->{Интересующие нас объекты располагаются на пиксельной сетке, значит контур - последовательность пикселей.}
-                \newline
-                \newline
-        	    \visible<2->{В дальнейшем будет удобно представлять каждый пиксель контура не через абсолютные координаты,
+                \only<1-1>{Интересующие нас объекты располагаются на пиксельной сетке, значит контур - последовательность пикселей.}
+        	    \only<2->{В дальнейшем будет удобно представлять каждый пиксель контура не через абсолютные координаты,
                             а как сдвиг относительно предыдущего}
             \end{column}}
-           
         \end{columns}
-	   
-       
     \end{frame}
-    
+
+    \begin{frame}
+        \frametitle{Почему Комплексные числа?}
+        Рассмотрим произведение двух комплексных чисел: $a+bi$ и $c-di$
+        $(a+bi)*(c-di) = (ac+bd) +(-ad+bc)i$
+        \begin{columns}
+            \begin{column}{.5\textwidth}
+                Действительная часть результата - в точности скалярное произведение векторов $(a,b)$ и $(c,d)$
+                
+            \end{column}
+            \begin{column}{.5\textwidth}
+                Мнимая - скалярное произведение векторов $(a,b)$ и $(-d,c)$
+                
+            \end{column}
+        \end{columns}
+        
+        \setlength{\unitlength}{2mm}
+                \begin{picture}(0, -20)
+                    \put(20, -10){\vector(1, 0){10}}
+                    \put(30, -10){$(a,b)$}
+                    \put(20, -10){\vector(2, 3){5}}
+                    \put(25, -5){$(c,d)$}
+                    \put(20, -10){\vector(-3, 2){5}}
+                    \put(15, -5){$(-d, c)$}
+                \end{picture}
+
+    \end{frame}
+
+    \begin{frame}
+        
+    \end{frame}
+
     \begin{frame}
 
     \end{frame}
-    
-    \begin{frame}
 
-    \end{frame}
-    
-    
+
     \begin{frame}
         \frametitle{ввдение}
         {\Huge текст}
